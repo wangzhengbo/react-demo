@@ -8,7 +8,7 @@ class EditableListItem extends Component {
     this.state = {
       content: props.data.content || '',
       bgColor: props.data.bgColor || props.colors[0],
-      inEditMode: typeof(props.data.id) === 'undefined'
+      inEditMode: !!props.data.inEditMode
     };
 
     this.saveItem = this.saveItem.bind(this);
@@ -40,6 +40,13 @@ class EditableListItem extends Component {
       bgColor: e.target.value
     });
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState({
+  //     content: nextProps.data.content || '',
+  //     bgColor: nextProps.data.bgColor || nextProps.colors[0]
+  //   });
+  // }
 
   render() {
     return (
@@ -81,6 +88,7 @@ export default class List extends Component {
       data: props.data
     };
 
+    this.nextId = this.state.data.length + 1;
     this.deleteItem = this.deleteItem.bind(this);
     this.addItem = this.addItem.bind(this);
   }
@@ -95,7 +103,7 @@ export default class List extends Component {
 
   addItem() {
     this.setState({
-      data: [ ...this.state.data, {} ]
+      data: [ ...this.state.data, {id: this.nextId++, inEditMode: true} ]
     });
   }
 
@@ -104,7 +112,7 @@ export default class List extends Component {
       <div className="list-container">
         <ul className="list">
           {
-            this.state.data.map((item, index) => <EditableListItem key={ index } data={ item } colors= { this.props.colors } onDeleteItem={ this.deleteItem }/> )
+            this.state.data.map((item, index) => <EditableListItem key={ item.id } data={ item } colors= { this.props.colors } onDeleteItem={ this.deleteItem }/> )
           }
         </ul>
         <button onClick={ this.addItem }>新建</button>
@@ -112,3 +120,12 @@ export default class List extends Component {
     );
   }
 }
+
+List.propTypes = {
+  data: React.PropTypes.arrayOf(React.PropTypes.shape({
+    id: React.PropTypes.number,
+    content: React.PropTypes.string,
+    bgColor: React.PropTypes.string,
+  })).isRequired,
+  colors: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
+};
