@@ -2,6 +2,16 @@ import React, { Component } from 'react';
 import './myList.less';
 
 class EditableListItem extends Component {
+  static propTypes = {
+    data: React.PropTypes.shape({
+      id: React.PropTypes.number,
+      content: React.PropTypes.string,
+      bgColor: React.PropTypes.string,
+    }).isRequired,
+    colors: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    onDeleteItem: React.PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -41,13 +51,6 @@ class EditableListItem extends Component {
     });
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState({
-  //     content: nextProps.data.content || '',
-  //     bgColor: nextProps.data.bgColor || nextProps.colors[0]
-  //   });
-  // }
-
   render() {
     return (
       <li className="list-item" style={{backgroundColor: this.state.bgColor}}>
@@ -81,6 +84,15 @@ class EditableListItem extends Component {
 }
 
 export default class List extends Component {
+  static propTypes = {
+    data: React.PropTypes.arrayOf(React.PropTypes.shape({
+      id: React.PropTypes.number,
+      content: React.PropTypes.string,
+      bgColor: React.PropTypes.string,
+    })).isRequired,
+    colors: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -88,7 +100,8 @@ export default class List extends Component {
       data: props.data
     };
 
-    this.nextId = this.state.data.length + 1;
+    // next item id is current item's max id + 1
+    this.nextId = this.state.data.reduce((max, item) => Math.max(max, item.id), 0) + 1;
     this.deleteItem = this.deleteItem.bind(this);
     this.addItem = this.addItem.bind(this);
   }
@@ -120,12 +133,3 @@ export default class List extends Component {
     );
   }
 }
-
-List.propTypes = {
-  data: React.PropTypes.arrayOf(React.PropTypes.shape({
-    id: React.PropTypes.number,
-    content: React.PropTypes.string,
-    bgColor: React.PropTypes.string,
-  })).isRequired,
-  colors: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
-};
