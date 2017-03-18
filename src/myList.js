@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import './myList.less';
+import './myList.less';
 
 export class EditableListItem extends Component {
   static propTypes = {
@@ -17,7 +17,7 @@ export class EditableListItem extends Component {
 
     this.state = {
       content: props.data.content || '',
-      bgColor: props.data.bgColor || (props.colors ? props.colors[0] : ''),
+      bgColor: props.data.bgColor || props.colors[0],
       inEditMode: !!props.data.inEditMode
     };
 
