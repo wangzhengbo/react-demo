@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './myList.less';
+// import './myList.less';
 
-class EditableListItem extends Component {
+export class EditableListItem extends Component {
   static propTypes = {
     data: React.PropTypes.shape({
       id: React.PropTypes.number,
@@ -17,7 +17,7 @@ class EditableListItem extends Component {
 
     this.state = {
       content: props.data.content || '',
-      bgColor: props.data.bgColor || props.colors[0],
+      bgColor: props.data.bgColor || (props.colors ? props.colors[0] : ''),
       inEditMode: !!props.data.inEditMode
     };
 
@@ -56,7 +56,8 @@ class EditableListItem extends Component {
       <li className="list-item" style={{backgroundColor: this.state.bgColor}}>
         <div>
           {
-            this.state.inEditMode ? <input value={this.state.content} onChange={ this.onContentChange }/> : this.state.content
+            this.state.inEditMode ? <input value={this.state.content} onChange={ this.onContentChange }/>
+              : <span className="content">{this.state.content}</span>
           }
 
           {
@@ -71,7 +72,7 @@ class EditableListItem extends Component {
           <button onClick={ () => this.props.onDeleteItem(this.props.data) }>删除</button>
           {
             this.state.inEditMode &&
-            <button onClick={ this.saveItem } disabled={ this.state.content.trim() === '' } title={ (this.state.content.trim() === '') ? '请输入文本' : '' }>保存</button>
+            <button onClick={ this.saveItem } disabled={this.state.content.trim() === ''} title={(this.state.content.trim() === '') ? '请输入文本' : ''}>保存</button>
           }
           {
             !this.state.inEditMode &&
@@ -125,7 +126,8 @@ export default class List extends Component {
       <div className="list-container">
         <ul className="list">
           {
-            this.state.data.map((item, index) => <EditableListItem key={ item.id } data={ item } colors= { this.props.colors } onDeleteItem={ this.deleteItem }/> )
+            this.state.data.map((item, index) => <EditableListItem key={item.id} data={item}
+              colors={this.props.colors} onDeleteItem={this.deleteItem}/> )
           }
         </ul>
         <button onClick={ this.addItem }>新建</button>
